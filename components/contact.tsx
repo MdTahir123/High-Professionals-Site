@@ -11,25 +11,47 @@ export function Contact() {
     fullName: "",
     email: "",
     phone: "",
+    message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const { ref, isInView } = useScrollAnimation({ threshold: 0.1 })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    setIsSubmitting(false)
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setIsSubmitting(true)
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbxsiykX2O8CyCr3QYxr0nozUMGaw3d7Zy_BXXtjpMVnsKOb4WEiHH-14wSubvKT289-XQ/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message || "N/A",
+      }),
+    })
+
     setIsSubmitted(true)
-    setFormData({ fullName: "", email: "", phone: "" })
-    
-    // Reset success state after 3 seconds
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      message: "",
+    })
+
     setTimeout(() => setIsSubmitted(false), 3000)
+
+  } catch (error) {
+    alert("Something went wrong")
   }
+
+  setIsSubmitting(false)
+}
 
   return (
     <section 
@@ -113,20 +135,29 @@ export function Contact() {
                     className="bg-white border-0 h-12 text-[#1e3a5f] placeholder:text-[#1e3a5f]/50 focus:ring-2 focus:ring-white/50 transition-all duration-300 hover:shadow-lg"
                   />
                 </div>
-                <Button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#1e3a5f] hover:bg-[#152a47] text-white h-12 text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-70"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit"
-                  )}
-                </Button>
+                  <div className="group">
+                  <textarea
+                    placeholder="Any message for us"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    rows={4}
+                    className="w-full bg-white border-0 rounded-md p-3 text-[#1e3a5f] placeholder:text-[#1e3a5f]/50 focus:ring-2 focus:ring-white/50 transition-all duration-300 hover:shadow-lg resize-none"
+                  />
+                </div>
+               <Button 
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-[#1e3a5f] hover:bg-[#152a47] text-white h-12 text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-70 flex items-center justify-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  "Submit"
+                )}
+              </Button>
               </form>
             )}
           </div>

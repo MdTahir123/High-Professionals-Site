@@ -89,19 +89,22 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {["Ongoing Projects", "Contact Us"].map((name) => (
-            <Link
-              key={name}
-              href="#"
-              className="relative text-[#1e3a5f] font-medium group"
-            >
-              {name}
-              <span
-                className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
-                style={{ backgroundColor: THEME }}
-              />
-            </Link>
-          ))}
+          {[
+              { name: "Ongoing Projects", href: "#projects" },
+              { name: "Contact Us", href: "#contact" }, // 👈 FIX
+            ].map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="relative text-[#1e3a5f] font-medium group"
+              >
+                {link.name}
+                <span
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
+                  style={{ backgroundColor: THEME }}
+                />
+              </Link>
+            ))}
         </div>
 
         {/* RIGHT SIDE */}
